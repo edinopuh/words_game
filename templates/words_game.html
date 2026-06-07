@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+          crossorigin="anonymous">
+    <style>.computer-message {scroll-margin-bottom: 100px; /* Отступ сверху при прокрутке */}
+    </style>
+    <title>Title</title>
+</head>
+<body>
+<h1 style="text-align: center; position: sticky; top: 0; padding-bottom: 20px; background-color: white;">Игра в
+    города</h1>
+<div class="container" style="margin-bottom: 60px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-sm-10 col-10 mb-10 border-start border-end border-2 d-flex flex-column"
+             style="min-height: 100vh" id="messages-container">
+            {% for message in message_list %}
+            {% if message[1] == 0 %}
+            <div class="d-flex justify-content-end">
+                <p class="bg-primary"
+                   style="max-width: 70%; padding: 10px; color: white; border-radius: 25px 25px 0 25px;">{{ message[0]
+                    }}</p>
+            </div>
+            {% else %}
+            <div class="d-flex justify-content-start computer-message">
+                <p class="bg-light" style="max-width: 70%; padding: 10px; border-radius: 25px 25px 25px 0;">{{
+                    message[0] }}</p>
+            </div>
+            {% endif %}
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+<div class="message-container position-fixed bottom-0 start-0 end-0"
+     style="z-index: 1000; padding-bottom: 20px; padding-top: 5px; background-color: white;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-sm-10 col-10 mb-10 border-start border-end border-2">
+                <form action="" method="post" class="w-100" style="background-color: white;">
+                    {{ form.hidden_tag() }}
+                    <div class="form-row d-flex gap-3 align-items-center">
+                        <div class="flex-grow-1">
+                            {{ form.answer(class="form-control", type="text", style="background-color: lightgray;") }}
+                            {% for error in form.answer.errors %}
+                            <div class="alert alert-danger mt-2" role="alert">
+                                {{ error }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            {{ form.submit(type="submit", class="btn btn-primary") }}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function scrollToLastComputerMessage() {
+        const messagesContainer = document.getElementById('messages-container');
+        if (!messagesContainer) return;
+
+        // Находим все сообщения компьютера внутри контейнера
+        const computerMessages = messagesContainer.querySelectorAll('.computer-message');
+
+        if (computerMessages.length > 0) {
+            // Берём последнее сообщение
+            const lastComputerMessage = computerMessages[computerMessages.length - 1];
+
+            // Прокручиваем к нему с плавностью
+            lastComputerMessage.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest' // Более надёжный вариант для разных браузеров
+            });
+        }
+    }
+
+    // Вызываем функцию после полной загрузки страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        scrollToLastComputerMessage();
+    });
+
+    // Также вызываем после отправки формы (с небольшой задержкой)
+    document.addEventListener('submit', function(e) {
+        setTimeout(scrollToLastComputerMessage, 500); // 500 мс — более надёжная задержка
+    });
+</script>
+</body>
+</html>
