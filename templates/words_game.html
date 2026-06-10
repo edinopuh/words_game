@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
           integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
           crossorigin="anonymous">
-    <style>.computer-message {scroll-margin-bottom: 100px; /* Отступ сверху при прокрутке */}
+    <style>.computer-message {scroll-margin-bottom: 100px;}
     </style>
     <title>Title</title>
 </head>
@@ -15,7 +15,7 @@
     города</h1>
 <div class="container" style="margin-bottom: 60px;">
     <div class="row justify-content-center">
-        <div class="col-md-8 col-sm-10 col-10 mb-10 border-start border-end border-2 d-flex flex-column"
+        <div class="col-md-9 col-sm-12 col-12 mb-12 border-start border-end border-2 d-flex flex-column"
              style="min-height: 100vh" id="messages-container">
             {% for message in message_list %}
             {% if message[1] == 0 %}
@@ -39,7 +39,7 @@
      style="z-index: 1000; padding-bottom: 20px; padding-top: 5px; background-color: white;">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-sm-10 col-10 mb-10 border-start border-end border-2">
+            <div class="col-md-9 col-sm-12 col-12 mb-12 border-start border-end border-2">
                 <form action="" method="post" class="w-100" style="background-color: white;">
                     {{ form.hidden_tag() }}
                     <div class="form-row d-flex gap-3 align-items-center">
