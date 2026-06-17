@@ -12,8 +12,8 @@
     <title>Title</title>
 </head>
 <body>
-<h1 style="text-align: center; position: sticky; top: 0; padding-bottom: 20px; background-color: white;">Игра в
-    города</h1>
+{% extends "main.html" %}
+{% block content %}
 <div class="container" style="margin-bottom: 60px;">
     <div class="row justify-content-center">
         <div class="col-md-9 col-sm-12 col-12 mb-12 border-start border-end border-2 d-flex flex-column"
@@ -22,12 +22,13 @@
             {% if message[1] == 0 %}
             <div class="d-flex justify-content-end">
                 <p class="bg-primary"
-                   style="max-width: 70%; padding: 10px; color: white; border-radius: 25px 25px 0 25px;">{{ message[0]
-                    }}</p>
+                   style="max-width: 70%; padding: 10px; color: white; border-radius: 25px 25px 0 25px; overflow-wrap: break-word;">
+                    {{ message[0] }}</p>
             </div>
             {% else %}
             <div class="d-flex justify-content-start computer-message">
-                <p class="bg-light" style="max-width: 70%; padding: 10px; border-radius: 25px 25px 25px 0;">{{
+                <p class="bg-light"
+                   style="max-width: 70%; padding: 10px; border-radius: 25px 25px 25px 0; overflow-wrap: break-word;">{{
                     message[0] }}</p>
             </div>
             {% endif %}
@@ -45,7 +46,12 @@
                     {{ form.hidden_tag() }}
                     <div class="form-row d-flex gap-3 align-items-center">
                         <div class="flex-grow-1">
+                            {% if is_finished %}
+                            {{ form.answer(class="form-control", type="text", style="background-color: lightgray;",
+                            disabled="disabled") }}
+                            {% else %}
                             {{ form.answer(class="form-control", type="text", style="background-color: lightgray;") }}
+                            {% endif %}
                             {% for error in form.answer.errors %}
                             <div class="alert alert-danger mt-2" role="alert">
                                 {{ error }}
@@ -53,7 +59,11 @@
                             {% endfor %}
                         </div>
                         <div>
+                            {% if is_finished %}
+                            {{ form.submit(type="submit", class="btn btn-primary", disabled="disabled") }}
+                            {% else %}
                             {{ form.submit(type="submit", class="btn btn-primary") }}
+                            {% endif %}
                         </div>
                     </div>
                 </form>
@@ -91,5 +101,6 @@
         setTimeout(scrollToLastComputerMessage, 500); // 500 мс — более надёжная задержка
     });
 </script>
+{% endblock %}
 </body>
 </html>
