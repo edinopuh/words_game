@@ -31,6 +31,7 @@ def cities_game():
         word = form.answer.data
         # Добавляем сообщение в сессионный список
         session['cities_message_list'].append((word, 0))
+        session.modified = True
 
         word = word.lower().strip()
         last_word = session['last_word']
@@ -46,6 +47,7 @@ def cities_game():
         if letter0 != '' and letter0 != word[0]:
             session['cities_message_list'].append(
                 (f'Твой город должен начинаться не на букву "{word[0]}", а на букву "{letter0}".', 1))
+            session.modified = True
         else:
             if word[-1] in ['ь', 'ы']:
                 letter = word[-2]
@@ -56,12 +58,15 @@ def cities_game():
                 session['cities_message_list'].append((
                     f'Я не знаю городов, которые начинаются на букву "{letter}". Пожалуйста, введи название другого города.',
                     1))
+                session.modified = True
             else:
                 new_word = random.choice(words_to_choose)
                 session['cities_message_list'].append((new_word, 1))
                 session['last_word'] = new_word  # Сохраняем в сессию
+                session.modified = True
 
         form.answer.data = ''
+        session.modified = True
     return render_template('chat.html',
                            message_list=session['cities_message_list'],
                            form=form,
