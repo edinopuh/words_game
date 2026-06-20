@@ -12,6 +12,67 @@ def func():
     return render_template('main.html')
 
 
+with open('words.txt', mode='r', encoding='utf-8') as f:
+    words = []
+    for e in f.readlines():
+        words += e.strip().split()
+
+
+@app.route('/words', methods=['GET', 'POST'])
+def words_game():
+    # Инициализация сессионных данных при первом заходе
+    if 'words_message_list' not in session:
+        session['words_message_list'] = []
+    if 'last_word' not in session:
+        session['last_word'] = ''
+
+    form = AnswerForm()
+    if form.validate_on_submit():
+        word = form.answer.data
+        # Добавляем сообщение в сессионный список
+        session['words_message_list'].append((word, 0))
+        session.modified = True
+
+        word = word.lower().strip()
+        last_word = session['last_word']
+
+        if last_word:
+            if last_word[-1] in ['ь', 'ы']:
+                letter0 = last_word[-2]
+            else:
+                letter0 = last_word[-1]
+        else:
+            letter0 = ''
+
+        if letter0 != '' and letter0 != word[0]:
+            session['words_message_list'].append(
+                (f'Твоё слово должно начинаться не на букву "{word[0]}", а на букву "{letter0}".', 1))
+            session.modified = True
+        else:
+            if word[-1] in ['ь', 'ы']:
+                letter = word[-2]
+            else:
+                letter = word[-1]
+            words_to_choose = list(filter(lambda x: x[0].lower() == letter, words))
+            if len(words_to_choose) == 0:
+                session['words_message_list'].append((
+                    f'Я не знаю слов, которые начинаются на букву "{letter}". Пожалуйста, введи другое слово.',
+                    1))
+                session.modified = True
+            else:
+                new_word = random.choice(words_to_choose)
+                session['words_message_list'].append((new_word, 1))
+                session['last_word'] = new_word  # Сохраняем в сессию
+                session.modified = True
+
+        form.answer.data = ''
+        session.modified = True
+    return render_template('chat.html',
+                           message_list=session['words_message_list'],
+                           form=form,
+                           title='Игра в слова')
+
+
 with open('cities.txt', mode='r', encoding='utf-8') as f:
     cities = []
     for e in f.readlines():
@@ -23,8 +84,8 @@ def cities_game():
     # Инициализация сессионных данных при первом заходе
     if 'cities_message_list' not in session:
         session['cities_message_list'] = []
-    if 'last_word' not in session:
-        session['last_word'] = ''
+    if 'last_city' not in session:
+        session['last_city'] = ''
 
     form = AnswerForm()
     if form.validate_on_submit():
@@ -34,13 +95,13 @@ def cities_game():
         session.modified = True
 
         word = word.lower().strip()
-        last_word = session['last_word']
+        last_city = session['last_city']
 
-        if last_word:
-            if last_word[-1] in ['ь', 'ы']:
-                letter0 = last_word[-2]
+        if last_city:
+            if last_city[-1] in ['ь', 'ы']:
+                letter0 = last_city[-2]
             else:
-                letter0 = last_word[-1]
+                letter0 = last_city[-1]
         else:
             letter0 = ''
 
@@ -62,7 +123,7 @@ def cities_game():
             else:
                 new_word = random.choice(words_to_choose)
                 session['cities_message_list'].append((new_word, 1))
-                session['last_word'] = new_word  # Сохраняем в сессию
+                session['last_city'] = new_word  # Сохраняем в сессию
                 session.modified = True
 
         form.answer.data = ''
